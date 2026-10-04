@@ -8,6 +8,9 @@ export default function Layout() {
   const backend = useBackend();
   const connected = useConnection();
   const lastUpdate = useDbValue('esp8266/lastUpdate');
+  // live mode: only accounts listed in /allowedUsers can read or control the greenhouse
+  const approved = useDbValue(`allowedUsers/${user?.uid}`);
+  const waitingForApproval = backend.mode === 'firebase' && approved === null;
 
   const logout = async () => {
     await signOut();
@@ -44,6 +47,11 @@ export default function Layout() {
       </div>
 
       <main className="content">
+        {waitingForApproval && (
+          <div className="form-error" data-testid="approval-notice">
+            Your account is waiting for approval. Ask the administrator to give it access to the greenhouse.
+          </div>
+        )}
         <Outlet />
       </main>
       <footer className="footer">Smart Greenhouse System · Emad Abouelsaad · Akademia WSB</footer>

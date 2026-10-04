@@ -2,9 +2,15 @@
   "rules": {
     ".read": false,
     ".write": false,
+    "allowedUsers": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false
+      }
+    },
     "esp8266": {
-      ".read": "auth != null",
-      ".write": "auth != null",
+      ".read": "auth != null && root.child('allowedUsers').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('allowedUsers').child(auth.uid).val() === true",
       "temperature": { ".validate": "newData.isNumber() && newData.val() >= -40 && newData.val() <= 80" },
       "humidity": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
       "soilMoisture": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
@@ -17,17 +23,17 @@
       }
     },
     "settings": {
-      ".read": "auth != null",
-      ".write": "auth != null",
+      ".read": "auth != null && root.child('allowedUsers').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('allowedUsers').child(auth.uid).val() === true",
       "autoMode": { ".validate": "newData.isBoolean()" }
     },
     "history": {
-      ".read": "auth != null",
+      ".read": "auth != null && root.child('allowedUsers').child(auth.uid).val() === true",
       ".write": false,
       ".indexOn": ["timestamp"]
     },
     "alerts": {
-      ".read": "auth != null",
+      ".read": "auth != null && root.child('allowedUsers').child(auth.uid).val() === true",
       ".write": false
     }
   }

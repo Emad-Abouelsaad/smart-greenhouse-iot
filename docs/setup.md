@@ -20,6 +20,10 @@ Demo account: `demo@greenhouse.local` / `Demo1234`. Useful URL options: `?interv
 3. Add a user for the device (e.g. `device@<your-project>.com`) in **Authentication → Users**.
 4. **Build → Realtime Database → Create database** (location: `europe-west1`, start in *locked mode*).
 5. **Project settings → Your apps → Web app (</>)** and copy the configuration values.
+6. Approve the accounts that may use the greenhouse: copy each user's **User UID** from **Authentication → Users**
+   and add it in **Realtime Database → Data** as `allowedUsers/<uid>` = `true`. Do this for the device account and
+   for your own account. New accounts created on the sign-up page see a "waiting for approval" message until you add
+   them here.
 
 ## 3. Connect the dashboard to Firebase
 

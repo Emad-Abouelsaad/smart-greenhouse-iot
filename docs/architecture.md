@@ -67,7 +67,8 @@ sequenceDiagram
 
 ## Security
 
-- All database paths require a signed-in user (`auth != null`); see [`database.rules.json`](../database.rules.json).
+- The data can be read and written only by signed-in accounts listed in `/allowedUsers` (approved by the administrator);
+  anyone can sign up, but a new account sees no data until it is approved. See [`database.rules.json`](../database.rules.json).
 - The readings of the node are validated (type and range); commands accept only `"ON"` or `"OFF"`.
 - `/history` and `/alerts` can only be written by Cloud Functions (Admin SDK).
 - The ESP8266 signs in with its own Firebase user account; Wi-Fi and Firebase secrets are kept in `config.h`, which
