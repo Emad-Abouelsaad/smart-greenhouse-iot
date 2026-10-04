@@ -225,11 +225,11 @@ test.describe('TC-11 Settings', () => {
   test('a changed threshold is applied to the alerts', async ({ page }) => {
     await loginOk(page);
     await nav(page, 'Settings');
-    await page.fill('[data-testid=th-temperature-max]', '10');
+    await page.fill('[data-testid=th-temperature-max]', '20');
     await page.click('[data-testid=save-settings]');
     await expect(page.getByTestId('settings-message')).toHaveText('Settings saved.');
     await nav(page, 'Dashboard');
-    await expect(page.getByTestId('alert-temperature')).toContainText('max 10');
+    await expect(page.getByTestId('alert-temperature')).toContainText('max 20');
   });
 });
 
