@@ -15,7 +15,10 @@ export default function LoginPage() {
   const [info, setInfo] = useState(location.state?.registered ? 'Account created successfully. Please log in.' : '');
   const [busy, setBusy] = useState(false);
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+  };
 
   const submit = async (e) => {
     e.preventDefault();

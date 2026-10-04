@@ -24,7 +24,7 @@ export default function SettingsPage() {
   useEffect(() => { if (saved !== undefined) setForm(mergeThresholds(saved || undefined)); }, [saved]);
   useEffect(() => { if (savedAutomation) setAutomation({ ...DEFAULT_AUTOMATION, ...savedAutomation }); }, [savedAutomation]);
 
-  const setField = (sensor, field, value) => setForm({ ...form, [sensor]: { ...form[sensor], [field]: value } });
+  const setField = (sensor, field, value) => setForm((f) => ({ ...f, [sensor]: { ...f[sensor], [field]: value } }));
   const setRule = (dev, field, value) => setAutomation({ ...automation, [dev]: { ...automation[dev], [field]: Number(value) } });
 
   const save = async (e) => {

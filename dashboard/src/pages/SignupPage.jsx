@@ -12,14 +12,17 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+  };
 
   const submit = async (e) => {
     e.preventDefault();
     setError('');
     const problem = validateSignup(form);
     if (problem) {
-      if (problem.startsWith('Passwords do not match')) setForm({ ...form, confirmPassword: '' });
+      if (problem.startsWith('Passwords do not match')) setForm((f) => ({ ...f, confirmPassword: '' }));
       return setError(problem);
     }
     setBusy(true);
