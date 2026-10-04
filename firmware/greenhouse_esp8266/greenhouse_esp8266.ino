@@ -12,7 +12,8 @@
  *     /esp8266/<device>/status.
  *  4. Automatic mode (/settings/autoMode): apply the control rules locally,
  *     so the greenhouse keeps working even when the internet is down.
- *  5. Safety: the pump is never ON for longer than PUMP_MAX_RUN_MS.
+ *  5. Safety: the pump is never ON for longer than PUMP_MAX_RUN_MS. After a
+ *     safety stop, automatic mode cannot restart it for PUMP_LOCKOUT_MS.
  *
  * Database paths are the same as in the dashboard and in the simulator.
  */
@@ -46,6 +47,7 @@ const unsigned long SEND_INTERVAL_MS     = 5000;   // sensor readings
 const unsigned long CONTROL_POLL_MS      = 1000;   // dashboard commands
 const unsigned long SETTINGS_POLL_MS     = 10000;  // automatic mode settings
 const unsigned long PUMP_MAX_RUN_MS      = 60000;  // safety limit for the pump
+const unsigned long PUMP_LOCKOUT_MS      = 600000; // no automatic restart for 10 min after a safety stop
 
 // ---------------- calibration ----------------
 // Raw ADS1115 values (gain 1, 0-4.096 V) measured in dry air and in water.
@@ -81,6 +83,7 @@ bool deviceOn[3] = {false, false, false};
 String lastCommand[3] = {"", "", ""};
 bool autoMode = false;
 unsigned long pumpStartedAt = 0;
+unsigned long pumpSafetyStopAt = 0;   // 0 = no safety stop yet
 unsigned long lastSend = 0, lastControlPoll = 0, lastSettingsPoll = 0;
 
 // ------------------------------------------------------------------
@@ -172,13 +175,20 @@ void pollSettings() {
   readNumber(json, "automation/light/offAbove", rules.lightOffAbove);
 }
 
+// True for PUMP_LOCKOUT_MS after a safety stop (the subtraction is safe when millis() rolls over).
+bool pumpLocked() {
+  return pumpSafetyStopAt != 0 && millis() - pumpSafetyStopAt < PUMP_LOCKOUT_MS;
+}
+
 // Same rules as dashboard/src/logic/autoControl.js (hysteresis).
 void applyAutomation(const Readings &r) {
   if (!autoMode || !r.valid) return;
   if (r.temperature > rules.fanOnAbove) setDevice(0, true);
   else if (r.temperature < rules.fanOffBelow) setDevice(0, false);
   if (!isnan(r.soil)) {
-    if (r.soil < rules.pumpOnBelow) setDevice(1, true);
+    // if the soil is still dry after a safety stop (empty tank, broken sensor),
+    // do not keep restarting the pump
+    if (r.soil < rules.pumpOnBelow && !pumpLocked()) setDevice(1, true);
     else if (r.soil > rules.pumpOffAbove) setDevice(1, false);
   }
   if (!isnan(r.light)) {
@@ -191,6 +201,8 @@ void checkPumpSafety() {
   if (deviceOn[1] && millis() - pumpStartedAt > PUMP_MAX_RUN_MS) {
     Serial.println("Safety: pump stopped after maximum run time");
     setDevice(1, false);
+    pumpSafetyStopAt = millis();
+    if (pumpSafetyStopAt == 0) pumpSafetyStopAt = 1;   // 0 means "no safety stop"
     if (Firebase.ready()) Firebase.RTDB.deleteNode(&fbdo, "/esp8266/pump/control");
   }
 }

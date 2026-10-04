@@ -12,6 +12,7 @@ import { decideActuators } from '../logic/autoControl.js';
 
 export const DEVICES = ['fan', 'pump', 'light'];
 export const PUMP_MAX_RUN_MS = 60_000; // safety: the pump never runs longer than 60 s
+export const PUMP_LOCKOUT_MS = 10 * 60_000; // no automatic restart for 10 min after a safety stop
 
 export class VirtualDevice {
   constructor(db, { intervalMs = 5000, speed = 60, startHour = 10, now = () => Date.now() } = {}) {
@@ -23,6 +24,7 @@ export class VirtualDevice {
     this.autoMode = false;
     this.automation = undefined;
     this.pumpStartedAt = null;
+    this.pumpSafetyStopAt = null;
     this.unsubs = [];
     this.timer = null;
   }
@@ -65,14 +67,21 @@ export class VirtualDevice {
 
     if (this.autoMode) {
       const next = decideActuators(this.model.readings(), this.model.actuators, this.automation);
+      // after a safety stop the automatic mode must not keep restarting the pump
+      if (next.pump === 'ON' && this.pumpLocked()) next.pump = 'OFF';
       for (const d of DEVICES) this.setActuator(d, next[d]);
     }
     // safety rule (also in the firmware): stop the pump after the maximum run time
     if (this.pumpStartedAt !== null && this.now() - this.pumpStartedAt > PUMP_MAX_RUN_MS) {
       this.setActuator('pump', 'OFF');
+      this.pumpSafetyStopAt = this.now();
       this.db.remove('esp8266/pump/control');
     }
     this.publish();
+  }
+
+  pumpLocked() {
+    return this.pumpSafetyStopAt !== null && this.now() - this.pumpSafetyStopAt < PUMP_LOCKOUT_MS;
   }
 
   publish() {

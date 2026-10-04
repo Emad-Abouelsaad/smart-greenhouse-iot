@@ -6,13 +6,13 @@ browser, the database logic, the alert rules and the control logic are the same 
 
 | Level | Tool | What is tested | Tests | Result |
 |---|---|---|---|---|
-| Unit and integration | Vitest | alert thresholds, automation rules, CSV export, form validation, database adapter, authentication, greenhouse model, virtual ESP8266, cloud logic | 29 | ✅ all passed |
+| Unit and integration | Vitest | alert thresholds, automation rules, CSV export, form validation, database adapter, authentication, greenhouse model, virtual ESP8266, cloud logic | 30 | ✅ all passed |
 | Unit | node:test | Cloud Functions alert rules | 3 | ✅ all passed |
 | Unit | pytest | Python greenhouse model, automation rules, simulator CSV output | 6 | ✅ all passed |
 | End-to-end | Playwright (Chromium) | complete user scenarios TC-01 … TC-13 on the production build | 26 | ✅ all passed |
 | Build | Arduino CLI (ESP8266 core 3.1.2) | firmware compiles for NodeMCU 1.0 | 1 | ✅ compiled |
 
-Last run: 4 October 2026.
+Last run: 5 October 2026.
 
 ## End-to-end test cases
 
@@ -42,7 +42,7 @@ These tests need the physical components and are planned for the installation ph
 | HW-02 | Soil sensor in dry soil, moist soil and water | readings close to 0 %, 40–60 %, 100 % after calibration |
 | HW-03 | Cover / light the LDR | light level follows the change within 5 s |
 | HW-04 | Relay switching from the dashboard | actuator switches within 2 s, status confirmed |
-| HW-05 | Pump safety | pump stops after 60 s even if the command is still ON |
+| HW-05 | Pump safety | pump stops after 60 s even if the command is still ON; with dry soil in automatic mode it is not restarted for 10 minutes |
 | HW-06 | Wi-Fi loss | automatic mode keeps working offline; data is sent again after reconnection |
 | HW-07 | 72-hour run | no restarts, no missing data longer than 1 minute |
 

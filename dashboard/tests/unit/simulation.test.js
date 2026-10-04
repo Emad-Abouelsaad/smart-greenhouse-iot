@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { MemoryDatabase } from '../../src/services/memoryDatabase.js';
 import { MemoryAuth, DEMO_USER } from '../../src/services/memoryAuth.js';
 import { GreenhouseModel } from '../../src/simulation/greenhouseModel.js';
-import { VirtualDevice, PUMP_MAX_RUN_MS } from '../../src/simulation/virtualDevice.js';
+import { VirtualDevice, PUMP_MAX_RUN_MS, PUMP_LOCKOUT_MS } from '../../src/simulation/virtualDevice.js';
 import { CloudLogic } from '../../src/simulation/cloudLogic.js';
 import { sendCommand } from '../../src/services/controls.js';
 
@@ -107,6 +107,25 @@ describe('Virtual ESP8266 + cloud logic', () => {
     now = PUMP_MAX_RUN_MS + 1000;
     await vi.advanceTimersByTimeAsync(1000);
     expect(db.get('esp8266/pump/status')).toBe('OFF');
+    dev.stop();
+  });
+  it('automatic mode does not restart the pump right after a safety stop', async () => {
+    vi.useFakeTimers();
+    let now = 0;
+    const db = new MemoryDatabase({ settings: { autoMode: true } });
+    // speed 1: the soil barely changes, like a pump running from an empty tank
+    const dev = new VirtualDevice(db, { intervalMs: 1000, speed: 1, now: () => now }); dev.start();
+    await db.set('simulation/scenario', 'drySoil');
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(db.get('esp8266/pump/status')).toBe('ON');
+    now = PUMP_MAX_RUN_MS + 1000;
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(db.get('esp8266/pump/status')).toBe('OFF');
+    await vi.advanceTimersByTimeAsync(5000);   // soil is still dry, but the pump stays locked
+    expect(db.get('esp8266/pump/status')).toBe('OFF');
+    now += PUMP_LOCKOUT_MS;
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(db.get('esp8266/pump/status')).toBe('ON');
     dev.stop();
   });
   it('applies automatic control when auto mode is on', async () => {

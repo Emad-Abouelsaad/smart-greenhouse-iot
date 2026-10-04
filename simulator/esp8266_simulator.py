@@ -34,6 +34,7 @@ from greenhouse_model import SCENARIOS, GreenhouseModel, decide_actuators
 
 DEVICES = ("fan", "pump", "light")
 PUMP_MAX_RUN_S = 60
+PUMP_LOCKOUT_S = 600  # no automatic restart for 10 min after a safety stop
 
 
 class FirebaseRest:
@@ -90,6 +91,10 @@ class VirtualESP8266:
         self.speed = speed
         self.last_command = {d: None for d in DEVICES}
         self.pump_started = None
+        self.pump_safety_stop = None
+
+    def pump_locked(self) -> bool:
+        return self.pump_safety_stop is not None and time.monotonic() - self.pump_safety_stop < PUMP_LOCKOUT_S
 
     def set_device(self, device: str, state: str) -> None:
         if self.model.actuators[device] == state:
@@ -113,6 +118,8 @@ class VirtualESP8266:
             print(f"Scenario: {scenario}")
         if auto:
             nxt = decide_actuators(self.model.readings(), self.model.actuators, settings.get("automation"))
+            if nxt["pump"] == "ON" and self.pump_locked():
+                nxt["pump"] = "OFF"
             for d in DEVICES:
                 self.set_device(d, nxt[d])
             return
@@ -129,6 +136,7 @@ class VirtualESP8266:
         if self.pump_started and time.monotonic() - self.pump_started > PUMP_MAX_RUN_S:
             print("Safety: pump stopped after the maximum run time")
             self.set_device("pump", "OFF")
+            self.pump_safety_stop = time.monotonic()
             if self.db:
                 self.db.delete("esp8266/pump/control")
         if self.db:
