@@ -6,25 +6,24 @@ Because the ESP8266 has only one analog input (A0), the three analog sensors are
 
 ## Components (bill of materials)
 
-| # | Component | Purpose | Qty | Approx. price |
-|---|---|---|---|---|
-| 1 | NodeMCU ESP8266 (ESP-12E) | Microcontroller with Wi-Fi | 1 | 25 PLN |
-| 2 | DHT11 | Air temperature and humidity | 1 | 10 PLN |
-| 3 | Capacitive soil moisture sensor v1.2 | Soil moisture | 1 | 10 PLN |
-| 4 | LDR (GL5528) + 10 kΩ resistor | Light level | 1 | 3 PLN |
-| 5 | MQ-135 module | Air quality (CO₂ equivalent) | 1 | 15 PLN |
-| 6 | ADS1115 module | 4-channel 16-bit ADC (I²C) | 1 | 20 PLN |
-| 7 | 4-channel 5 V relay module (opto-isolated) | Switching the actuators | 1 | 20 PLN |
-| 8 | 12 V DC fan | Ventilation | 1 | 20 PLN |
-| 9 | 12 V DC submersible pump + tube | Irrigation | 1 | 30 PLN |
-| 10 | 12 V LED grow light strip | Supplementary lighting | 1 | 35 PLN |
-| 11 | 12 V 3 A power supply + LM2596 step-down (5 V) | Power | 1 | 40 PLN |
-| 12 | Breadboard, jumper wires, terminal blocks | Wiring | – | 20 PLN |
-| | **Total (laboratory prototype)** | | | **≈ 250 PLN** |
+| # | Component | Purpose | Qty |
+|---|---|---|---|
+| 1 | NodeMCU ESP8266 (ESP-12E) | Microcontroller with Wi-Fi | 1 |
+| 2 | DHT11 | Air temperature and humidity | 1 |
+| 3 | Capacitive soil moisture sensor v1.2 | Soil moisture | 1 |
+| 4 | LDR (GL5528) + 10 kΩ resistor | Light level | 1 |
+| 5 | MQ-135 module | Air quality (CO₂ equivalent) | 1 |
+| 6 | ADS1115 module | 4-channel 16-bit ADC (I²C) | 1 |
+| 7 | 4-channel 5 V relay module (opto-isolated) | Switching the actuators | 1 |
+| 8 | 12 V DC fan | Ventilation | 1 |
+| 9 | 12 V DC submersible pump + tube | Irrigation | 1 |
+| 10 | 12 V LED grow light strip | Supplementary lighting | 1 |
+| 11 | 12 V 3 A power supply + LM2596 step-down (5 V) | Power | 1 |
+| 12 | Breadboard, jumper wires, terminal blocks | Wiring | – |
 
 > The prototype only covers one small growing area. A system for a real greenhouse needs the greenhouse
 > structure, industrial sensors for several zones, a professional irrigation and ventilation installation and
-> a weather-proof electrical cabinet. This cost is far higher and is outside the scope of the thesis, so the
+> a weather-proof electrical cabinet. Such an installation is expensive and is outside the scope of the thesis, so the
 > system is validated with the simulation described in [testing.md](testing.md).
 
 ## Wiring
