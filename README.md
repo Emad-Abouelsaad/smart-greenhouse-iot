@@ -46,8 +46,10 @@ More details: [docs/architecture.md](docs/architecture.md) · [docs/hardware.md]
 - **Alerts** (warning / critical) with thresholds that the user can change on the Settings page
 - **Manual control** of the fan, pump and lights; every command is removed after 30 s so old commands are never re-applied
 - **Automatic mode** with hysteresis rules, executed on the ESP8266 so it also works without internet
-- **Safety rule**: the pump never runs longer than 60 seconds
-- **User accounts** with Firebase Authentication (sign up, log in, password reset, protected pages)
+- **Safety rule**: the pump never runs longer than 60 seconds, and after a safety stop the automatic mode cannot
+  restart it for 10 minutes (protects against an empty tank or a broken soil sensor)
+- **User accounts** with Firebase Authentication (sign up, log in, password reset, protected pages); new accounts
+  get access to the greenhouse only after the administrator approves them
 - **Responsive design** – works on computers, tablets and smartphones
 - **Simulation mode** – the whole system runs without hardware and without a Firebase project, using a physical
   greenhouse model (day/night cycle, reaction to the actuators) and test scenarios (hot day, dry soil, low light…)
@@ -70,13 +72,13 @@ See [docs/setup.md](docs/setup.md) for the complete guide (Firebase, firmware, d
 
 | Part | Command | Result |
 |---|---|---|
-| Dashboard logic & simulation (Vitest) | `cd dashboard && npm test` | 29 tests passed |
+| Dashboard logic & simulation (Vitest) | `cd dashboard && npm test` | 30 tests passed |
 | End-to-end test cases TC-01 … TC-13 (Playwright) | `cd dashboard && npx playwright test` | 26 tests passed |
 | Cloud Functions alert rules | `cd functions && npm test` | 3 tests passed |
 | Python greenhouse model & simulator | `cd simulator && pytest -q` | 6 tests passed |
-| Firmware build | Arduino CLI, board `esp8266:esp8266:nodemcuv2` | compiles (RAM 48 %, flash 49 %) |
+| Firmware build | `arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2` | compiles |
 
-The tests run automatically on GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+The tests and the firmware build run automatically on GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ## Screenshots
 
@@ -95,6 +97,7 @@ esp8266/
   pump/  control, status
   light/ control, status
 settings/   autoMode, thresholds/…, automation/…
+allowedUsers/ <uid>: true   (approved accounts, added by the administrator in the Firebase console)
 history/    <pushId>: { timestamp, temperature, humidity, … }   (written by Cloud Functions)
 alerts/     active: […], log/<pushId>: { sensor, level, message, timestamp }
 ```

@@ -15,16 +15,19 @@
   },
   "dependencies": {
     "chart.js": "^4.4.4",
-    "firebase": "^10.14.1",
+    "firebase": "^12.19.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@playwright/test": "1.56.0",
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11",
-    "vitest": "^2.1.8"
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.13.6"
   }
 }
