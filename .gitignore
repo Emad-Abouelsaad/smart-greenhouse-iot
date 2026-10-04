@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+test-results/
+playwright-report/
+__pycache__/
+.pytest_cache/
+*.pyc
+firmware/**/config.h
+.firebaserc
+.firebase/
+*.log
+.DS_Store
