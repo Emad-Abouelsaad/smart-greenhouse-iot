@@ -6,10 +6,10 @@ browser, the database logic, the alert rules and the control logic are the same 
 
 | Level | Tool | What is tested | Tests | Result |
 |---|---|---|---|---|
-| Unit | Vitest | alert thresholds, automation rules, CSV export, form validation, database adapter, authentication, greenhouse model, virtual ESP8266, cloud logic | 29 | ✅ all passed |
+| Unit and integration | Vitest | alert thresholds, automation rules, CSV export, form validation, database adapter, authentication, greenhouse model, virtual ESP8266, cloud logic | 29 | ✅ all passed |
 | Unit | node:test | Cloud Functions alert rules | 3 | ✅ all passed |
 | Unit | pytest | Python greenhouse model, automation rules, simulator CSV output | 6 | ✅ all passed |
-| Integration / end-to-end | Playwright (Chromium) | complete user scenarios TC-01 … TC-13 on the production build | 26 | ✅ all passed |
+| End-to-end | Playwright (Chromium) | complete user scenarios TC-01 … TC-13 on the production build | 26 | ✅ all passed |
 | Build | Arduino CLI (ESP8266 core 3.1.2) | firmware compiles for NodeMCU 1.0 | 1 | ✅ compiled |
 
 Last run: 4 October 2026.
@@ -19,7 +19,7 @@ Last run: 4 October 2026.
 | ID | Test case | Steps | Result |
 |---|---|---|---|
 | TC-01 | Login | open login page; correct email + password → home page; wrong email → "no account" message with reset option; wrong password → "password is incorrect" message; wrong email + wrong password → account not available; empty fields → validation message | Pass (6/6) |
-| TC-02 | Sign up | enter first name, last name, email, password; correct confirm password → account created, login page opens; wrong confirm password → error and the field is cleared; new account can log in; already registered email → error | Pass (4/4) |
+| TC-02 | Sign up | enter first name, last name, email, password; correct confirm password → account created, login page opens; wrong confirm password → error and the field is cleared; new account can log in; already registered email → error | Pass (5/5) |
 | TC-03 | Real-time monitoring | all five values are shown; "last update" changes automatically; chart is displayed | Pass |
 | TC-04 | Soil moisture | normal → "Normal"; over-watered → warning; dry soil → alert, pump can be switched on | Pass (3/3) |
 | TC-05 | Temperature & humidity | normal → "Normal"; hot day → alert, fan can be switched on; cold night → low temperature alert, fan stays off | Pass (3/3) |

@@ -103,7 +103,7 @@ alerts/     active: […], log/<pushId>: { sensor, level, message, timestamp }
 
 | Version | Date | Main changes |
 |---|---|---|
-| 2.0 | January 2026 | Web dashboard with Chart.js trends, threshold alerts, CSV export, demo mode, validated database rules |
+| 2.0 | January 2026 | Web dashboard with Chart.js trends, threshold alerts, CSV export, demo mode, database rules |
 | 3.0 | October 2026 | React application with Firebase Authentication, history and settings pages, automatic mode, Cloud Functions, ESP8266 firmware with ADS1115 and air quality sensor, Python simulator, automated tests and CI |
 
 ## Author

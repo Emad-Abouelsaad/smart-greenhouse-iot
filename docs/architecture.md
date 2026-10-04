@@ -1,6 +1,6 @@
 # System architecture
 
-The system has four layers: **sensing**, **edge control**, **cloud** and **application**.
+The system consists of three main parts: the **sensor node** (sensing and edge control on the ESP8266), the **cloud** (Firebase) and the **web application**. The diagram below shows the node split into its sensing and edge-control layers.
 
 ```mermaid
 flowchart TB
@@ -68,7 +68,7 @@ sequenceDiagram
 ## Security
 
 - All database paths require a signed-in user (`auth != null`); see [`database.rules.json`](../database.rules.json).
-- Every value is validated (type and range); commands accept only `"ON"` or `"OFF"`.
+- The readings of the node are validated (type and range); commands accept only `"ON"` or `"OFF"`.
 - `/history` and `/alerts` can only be written by Cloud Functions (Admin SDK).
 - The ESP8266 signs in with its own Firebase user account; Wi-Fi and Firebase secrets are kept in `config.h`, which
   is not stored in git.
