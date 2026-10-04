@@ -78,6 +78,7 @@ test.describe('TC-02 Sign up', () => {
   test('Step 4: the new account can log in', async ({ page }) => {
     await fill(page, user.pass);
     await page.click('[data-testid=signup-submit]');
+    await expect(page).toHaveURL(/\/login$/);   // the sign-up page has an #email field too
     await page.fill('#email', user.email);
     await page.fill('#password', user.pass);
     await page.click('[data-testid=login-submit]');
